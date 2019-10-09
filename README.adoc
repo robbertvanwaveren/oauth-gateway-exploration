@@ -1,0 +1,47 @@
+= Spring Security OAuth 2.0 Gateway Exploration Example
+
+This is the full source-code for the https://blog.jdriven.com/2019/10/spring-security-5-2-OAuth-2-exploration-part1/[following blog post series].
+
+_No license is provided as it is only meant for learning purposes._
+
+== Set-up
+
+The basic set-up we are going for is:
+
+* gateway at localhost:8080
+* dummy service at localhost:8081
+* keycloak at localhost:9090
+
+run `docker-compose up -d` inside the `keycloak` directory to start a local keycloak server mapped to host port `9090`
+
+== One-time Keycloak set-up
+
+Browse to http://localhost:9090
+
+* login with `admin` / `admin`
+* create a realm called `service` 
+* a client called `gateway`
+** use `valid redirect url`: `http://localhost:8080/*`
+** select `Access Type`: `confidential`
+** `save` and click on the newly visible tab `Credentials`
+* Copy the `Secret` to the `client-secret` in the oauth-gateway application.yml
+* create a user for yourself to login with
+* create a role called `dummy` and assign it to your user
+
+== Running the services
+
+run `GatewayApplication` to start the gateway
+
+run `DummyApplication` to start the dummy backend service
+
+== Manual verification
+
+Browse incognito to http://localhost:8080
+
+* login with the user you created
+* checkout the result (in case of a silent 401/403 failure, check for a `WWW-Authenticate` header in the response for a clue)
+
+NOTE: In order to see one of the powers of OAuth-based AuthN/AuthZ, restart the Gateway and/or Dummy service and/or remove you Session Cookie stored in your browser (`F12`, `Application`, `Cookies`, `http://localhost:8080`, `Clear All` in Chrome) and refresh the page.
+
+NOTE: If you just want to look at how the request with the token to the backend looks like, you could also just run _netcat_ instead of the dummy-service using:
+`nc -l localhost 8081`
