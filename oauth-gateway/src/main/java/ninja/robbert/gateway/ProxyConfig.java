@@ -17,9 +17,12 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.web.reactive.function.BodyExtractors.toDataBuffers;
 import static org.springframework.web.reactive.function.BodyInserters.fromDataBuffers;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
@@ -34,6 +37,7 @@ public class ProxyConfig {
 	private static final String API_PREFIX = "/api/";
 	private static final String CATCH_ALL_SUFFIX = "/**";
 	private static final String SERVICE_PARAM = "{service}";
+	private static final List<String> STRIPPED_HEADERS = Arrays.asList(COOKIE, SET_COOKIE, SET_COOKIE2, HOST, TRANSFER_ENCODING, CONNECTION, "keep-alive");
 
 	private final ReactiveOAuth2AuthorizedClientService authorizedClientService;
 	private final GatewayConfig config;
@@ -50,29 +54,23 @@ public class ProxyConfig {
 
 	@Bean
 	public RouterFunction<ServerResponse> proxy(WebClient webClient) {
-		return route(path(API_PREFIX + SERVICE_PARAM + CATCH_ALL_SUFFIX), request -> authorizedClient(request)
-			.map(attr -> webClient.method(request.method())
-				.uri(toBackendUri(request))
-				.headers(cleanedHeaders(request.headers().asHttpHeaders()))
-				.body(fromDataBuffers(request.exchange().getRequest().getBody()))
-				.attributes(attr))
-			.flatMap(WebClient.RequestHeadersSpec::exchange)
-			.flatMap(response -> ServerResponse.status(response.statusCode())
-				.headers(cleanedHeaders(response.headers().asHttpHeaders()))
-				.body(fromDataBuffers(response.body(toDataBuffers())))));
+		return route(path(API_PREFIX + SERVICE_PARAM + CATCH_ALL_SUFFIX),
+			request -> authorizedClient(request)
+				.map(attr -> webClient.method(request.method())
+					.uri(toBackendUri(request))
+					.headers(cleanedHeaders(request.headers().asHttpHeaders()))
+					.body(fromDataBuffers(request.exchange().getRequest().getBody()))
+					.attributes(attr))
+				.flatMap(WebClient.RequestHeadersSpec::exchange)
+				.flatMap(response -> ServerResponse.status(response.statusCode())
+					.headers(cleanedHeaders(response.headers().asHttpHeaders()))
+					.body(fromDataBuffers(response.body(toDataBuffers())))));
 	}
 
 	private Consumer<HttpHeaders> cleanedHeaders(final HttpHeaders httpHeaders) {
 		return headers -> {
 			headers.putAll(httpHeaders);
-			headers.remove(HttpHeaders.COOKIE);
-			headers.remove(HttpHeaders.SET_COOKIE);
-			headers.remove(HttpHeaders.SET_COOKIE2);
-			headers.remove(HttpHeaders.HOST);
-			headers.remove(HttpHeaders.TRANSFER_ENCODING);
-			headers.remove(HttpHeaders.CONNECTION);
-			headers.remove("keep-alive");
-			// etc
+			STRIPPED_HEADERS.forEach(headers::remove);
 		};
 	}
 

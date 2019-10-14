@@ -156,7 +156,6 @@ public class OAuthGatewayIT {
 			.exchange().block();
 
 		assertEquals(HttpStatus.OK, apiResponse.statusCode());
-		//final String result = apiResponse.bodyToMono(String.class).block();
 		final Map jsonMap = apiResponse.bodyToMono(Map.class).block();
 		assertNotNull(jsonMap);
 		assertEquals("hello mocked user", jsonMap.get("message"));

@@ -1,72 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	
-	<parent>
-		<groupId>ninja.robbert</groupId>
-		<artifactId>oauth-gateway-exploration</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-	</parent>
+									xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+									xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+				<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>oauth-gateway</artifactId>
+				<parent>
+								<groupId>ninja.robbert</groupId>
+								<artifactId>oauth-gateway-exploration</artifactId>
+								<version>0.0.1-SNAPSHOT</version>
+				</parent>
 
-	<properties>
-	 <!-- make sure mockwebserver has property transitive dependencies -->
-		<okhttp3.version>4.1.0</okhttp3.version>
-	</properties>
+				<artifactId>oauth-gateway</artifactId>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-bom</artifactId>
-				<version>${spring-security.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+				<properties>
+								<!-- make sure mockwebserver has property transitive dependencies -->
+								<okhttp3.version>4.1.0</okhttp3.version>
+				</properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webflux</artifactId>
-		</dependency>
+				<dependencyManagement>
+								<dependencies>
+												<dependency>
+																<groupId>org.springframework.security</groupId>
+																<artifactId>spring-security-bom</artifactId>
+																<version>${spring-security.version}</version>
+																<type>pom</type>
+																<scope>import</scope>
+												</dependency>
+								</dependencies>
+				</dependencyManagement>
 
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
+				<dependencies>
+								<dependency>
+												<groupId>org.springframework.boot</groupId>
+												<artifactId>spring-boot-starter-webflux</artifactId>
+								</dependency>
+								<dependency>
+												<groupId>org.springframework.security</groupId>
+												<artifactId>spring-security-config</artifactId>
+								</dependency>
+								<dependency>
+												<groupId>org.springframework.boot</groupId>
+												<artifactId>spring-boot-starter-security</artifactId>
+								</dependency>
+								<dependency>
+												<groupId>org.springframework.boot</groupId>
+												<artifactId>spring-boot-starter-oauth2-client</artifactId>
+								</dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-oauth2-client</artifactId>
-		</dependency>
-
-		<!-- test dependencies -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.squareup.okhttp3</groupId>
-			<artifactId>mockwebserver</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+								<!-- test dependencies -->
+								<dependency>
+												<groupId>org.springframework.boot</groupId>
+												<artifactId>spring-boot-starter-test</artifactId>
+												<scope>test</scope>
+								</dependency>
+								<dependency>
+												<groupId>com.squareup.okhttp3</groupId>
+												<artifactId>mockwebserver</artifactId>
+												<scope>test</scope>
+								</dependency>
+				</dependencies>
 </project>

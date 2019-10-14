@@ -1,8 +1,6 @@
 package ninja.robbert.gateway;
 
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
@@ -15,15 +13,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import static org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers.pathMatchers;
 
 @EnableWebFluxSecurity
-@Configuration
 public class SecurityConfig {
 
 	public static final String API_MATCHER_PATH = "/api/**";
-	private final ApplicationContext context;
-
-	public SecurityConfig(final ApplicationContext context) {
-		this.context = context;
-	}
 
 	@Bean
 	WebClient tokenAugmentingWebClient(final ReactiveClientRegistrationRepository clientRegistrationRepository,
@@ -34,12 +26,9 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public SecurityWebFilterChain securityWebFilterChain() {
+	public SecurityWebFilterChain securityWebFilterChain(final ServerHttpSecurity http) {
 		// the matcher for all paths that need to be secured (require a logged-in user)
 		final ServerWebExchangeMatcher apiPathMatcher = pathMatchers(API_MATCHER_PATH);
-
-		// default chain for all requests
-		final ServerHttpSecurity http = this.context.getBean(ServerHttpSecurity.class);
 
 		return http
 			.authorizeExchange().matchers(apiPathMatcher).authenticated()
