@@ -15,6 +15,6 @@ public class HelloController {
 	public Map<String, String> hello(final @AuthenticationPrincipal Jwt jwt) {
 		System.out.println("claims:\n" + jwt.getClaims());
 		System.out.println("\nheaders:\n" + jwt.getHeaders());
-		return Collections.singletonMap("message", "Hello " + jwt.getClaimAsString("name"));
+		return Collections.singletonMap("message", "Hello " + jwt.getSubject());
 	}
 }
